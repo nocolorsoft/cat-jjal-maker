@@ -27,41 +27,105 @@
     }
   </style>
   <body>
-    <h1>1번째 고양이 가라사대</h1>
-    <form>
-      <input type="text" name="name" placeholder="영어 대사를 입력해주세요" />
-      <button type="submit">생성</button>
-    </form>
-    <div class="main-card">
-      <img
-        src="https://cataas.com/cat/HSENVDU4ZMqy7KQ0/says/react"
-        alt="고양이"
-        width="400"
-      />
-      <button>🤍</button>
-    </div>
-    <ul class="favorites">
-      <li>
-        <img
-          src="https://cataas.com/cat/HSENVDU4ZMqy7KQ0/says/react"
-          alt="고양이"
-        />
-      </li>
-      <li>
-        <img
-          src="https://cataas.com/cat/HSENVDU4ZMqy7KQ0/says/react"
-          alt="고양이"
-        />
-      </li>
-      <li>
-        <img
-          src="https://cataas.com/cat/HSENVDU4ZMqy7KQ0/says/react"
-          alt="고양이"
-        />
-      </li>
-    </ul>
-    <script>
+    <div id="app"></div>
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/babel">
+
       console.log("야옹");
+
+
+      function CatItem(props) {
+        return (
+                <div>
+                  <img
+                          src={props.img}
+                          alt="고양이"
+                          style={{ width: "200px" }}
+                  />
+                </div>
+        );
+      }
+
+      function Favorites({favorites}) {
+
+        return (
+                <ul className="favorites">
+                  {favorites.map((cat =>
+                            <li>
+                                <CatItem img={cat}/>
+                            </li>
+                    ))}
+                </ul>
+        )
+      }
+
+      const MainCard = ({img,handleHeartClick }) => {
+
+        return (
+                <div className="main-card">
+                  <img
+                          src={img}
+                          alt="고양이"
+                          width="400"
+                  />
+                  <button onClick={handleHeartClick}>🤍</button>
+                </div>
+        )
+      }
+
+      const Title = (props) => {
+        console.log(props);
+        return (
+                <h1>{props.children}</h1>
+        );
+      }
+
+      const Form = ({handleFormSubmit}) => {
+        return (
+                <form onSubmit={handleFormSubmit}>
+                  <input type="text" placeholder="고양이 이름" />
+                  <button type="submit">추가</button>
+                </form>
+        );
+      }
+
+
+      const App = () => {
+        const CAT1 = "https://cataas.com/cat/HSENVDU4ZMqy7KQ0/says/react";
+        const CAT2 = "https://cataas.com/cat/BxqL2EjFmtxDkAm2/says/inflearn";
+        const CAT3 = "https://cataas.com/cat/18MD6byVC1yKGpXp/says/JavaScript";
+
+        const [counter, setCounter] = React.useState(1);
+        const [mainCat, setMainCat] = React.useState(CAT1);
+        const [favorites, setFavorites] = React.useState([CAT1, CAT2]);
+        console.log(`counter: ${counter}`);
+
+        function handleFormSubmit(e) {
+          e.preventDefault();
+          console.log("폼 전송됨11");
+          setCounter(counter + 1);
+          setMainCat(CAT2);
+        }
+
+        function handleHeartClick() {
+          console.log("하트를 클릭했습니다.");
+          setFavorites([...favorites, CAT3]);
+        }
+
+        return (
+                <div>
+                  <Title>{counter}번째 고양이 가라사대</Title>
+                  <Form handleFormSubmit={handleFormSubmit}/>
+                  <MainCard img={mainCat} handleHeartClick={handleHeartClick}/>
+                  <Favorites favorites={favorites}/>
+                </div>
+        );
+      };
+
+      const renderingHere = document.querySelector("#app");
+      ReactDOM.render(<App/>, renderingHere);
     </script>
   </body>
 </html>
