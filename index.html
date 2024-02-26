@@ -82,11 +82,35 @@
         );
       }
 
-      const Form = ({handleFormSubmit}) => {
+      const Form = () => {
+        const includesHangul = (text) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/i.test(text);
+        const [value, setValue] = React.useState("");
+        const [errorMessage, setErrorMessage] = React.useState("");
+
+        function handleInputChange(e) {
+          const userValue = e.target.value;
+          console.log(userValue);
+          setErrorMessage("");
+          setValue(userValue.toUpperCase());
+
+          if(includesHangul(userValue)) {
+            setErrorMessage("한글을 입력하실 수 없습니다.");
+          }
+        }
+
+        function handleFormSubmit(e) {
+          e.preventDefault();
+          setErrorMessage("");
+          if(value === '') {
+            setErrorMessage("빈 값으로 만들 수 없습니다.");
+          }
+        }
+
         return (
                 <form onSubmit={handleFormSubmit}>
-                  <input type="text" placeholder="고양이 이름" />
+                  <input type="text" name="name" placeholder="영어 대사를 입력해주세요." value={value} onChange={handleInputChange}/>
                   <button type="submit">추가</button>
+                  <p style={{color:"red"}}>{errorMessage}</p>
                 </form>
         );
       }
@@ -102,13 +126,6 @@
         const [favorites, setFavorites] = React.useState([CAT1, CAT2]);
         console.log(`counter: ${counter}`);
 
-        function handleFormSubmit(e) {
-          e.preventDefault();
-          console.log("폼 전송됨11");
-          setCounter(counter + 1);
-          setMainCat(CAT2);
-        }
-
         function handleHeartClick() {
           console.log("하트를 클릭했습니다.");
           setFavorites([...favorites, CAT3]);
@@ -117,7 +134,7 @@
         return (
                 <div>
                   <Title>{counter}번째 고양이 가라사대</Title>
-                  <Form handleFormSubmit={handleFormSubmit}/>
+                  <Form />
                   <MainCard img={mainCat} handleHeartClick={handleHeartClick}/>
                   <Favorites favorites={favorites}/>
                 </div>
